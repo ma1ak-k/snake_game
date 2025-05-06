@@ -89,7 +89,51 @@ function gameLoop() {
     } else if (snake.some(segment => segment.x === head.x && segment.y === head.y)) {
         // Check for self-collision
         gameOver = true;
-        return;
+
+        // Create a game-over overlay
+        const gameOverOverlay = document.createElement('div');
+        gameOverOverlay.style.position = 'fixed';
+        gameOverOverlay.style.top = '0';
+        gameOverOverlay.style.left = '0';
+        gameOverOverlay.style.width = '100%';
+        gameOverOverlay.style.height = '100%';
+        gameOverOverlay.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+        gameOverOverlay.style.display = 'flex';
+        gameOverOverlay.style.flexDirection = 'column';
+        gameOverOverlay.style.justifyContent = 'center';
+        gameOverOverlay.style.alignItems = 'center';
+        gameOverOverlay.style.color = 'white';
+        gameOverOverlay.style.zIndex = '1000';
+
+        // Add game-over message
+        const gameOverMessage = document.createElement('h1');
+        gameOverMessage.innerText = 'Game Over!';
+        gameOverOverlay.appendChild(gameOverMessage);
+
+        // Add score display
+        const scoreDisplay = document.createElement('p');
+        scoreDisplay.innerText = 'Your Score: ' + score;
+        scoreDisplay.style.fontSize = '20px';
+        gameOverOverlay.appendChild(scoreDisplay);
+
+        // Add restart button
+        const restartButton = document.createElement('button');
+        restartButton.innerText = 'Restart Game';
+        restartButton.style.padding = '10px 20px';
+        restartButton.style.fontSize = '18px';
+        restartButton.style.backgroundColor = 'limegreen';
+        restartButton.style.color = 'white';
+        restartButton.style.border = 'none';
+        restartButton.style.borderRadius = '5px';
+        restartButton.style.cursor = 'pointer';
+        restartButton.addEventListener('click', () => {
+            document.body.removeChild(gameOverOverlay);
+            startGame();
+        });
+        gameOverOverlay.appendChild(restartButton);
+
+        // Append the overlay to the body
+        document.body.appendChild(gameOverOverlay);
     }
 
     snake.unshift(head);
@@ -105,8 +149,7 @@ function gameLoop() {
     // Draw the game elements
     draw();
 
-    // Use requestAnimationFrame for smoother rendering
-    setTimeout(() => requestAnimationFrame(gameLoop), 200); // Slower snake (200ms delay)
+    setTimeout(() => requestAnimationFrame(gameLoop), 50);
 }
 
 // Draw background, snake, and food
