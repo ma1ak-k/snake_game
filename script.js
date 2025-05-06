@@ -10,6 +10,8 @@ let snake = [{ x: 10, y: 10 }];
 let direction = { x: 1, y: 0 };
 let food = spawnFood();
 let gameOver = false;
+let touchStartX = 0;
+let touchStartY = 0;
 
 const foodImage = new Image();
 foodImage.src = 'food.svg';
@@ -201,34 +203,43 @@ function changeDirection(e) {
     }
 }
 
-// Allow touch events for mobile devices
-function handleTouch(e) {
+function handleTouchStart(e) {
     const touch = e.touches[0];
-    const x = touch.clientX;
-    const y = touch.clientY;
+    touchStartX = touch.clientX;
+    touchStartY = touch.clientY;
+}
 
-    const canvasRect = canvas.getBoundingClientRect();
-    const offsetX = x - canvasRect.left;
-    const offsetY = y - canvasRect.top;
+function handleTouchEnd(e) {
+    const touch = e.changedTouches[0];
+    const touchEndX = touch.clientX;
+    const touchEndY = touch.clientY;
 
-    if (offsetX < canvas.width / 2) {
-        if (direction.x === 0) direction = { x: -1, y: 0 };
+    const diffX = touchEndX - touchStartX;
+    const diffY = touchEndY - touchStartY;
+
+    // Determine swipe direction
+    if (Math.abs(diffX) > Math.abs(diffY)) {
+        // Horizontal swipe
+        if (diffX > 0 && direction.x === 0) {
+            direction = { x: 1, y: 0 }; // Swipe right
+        } else if (diffX < 0 && direction.x === 0) {
+            direction = { x: -1, y: 0 }; // Swipe left
+        }
     } else {
-        if (direction.x === 0) direction = { x: 1, y: 0 };
-    }
-
-    if (offsetY < canvas.height / 2) {
-        if (direction.y === 0) direction = { x: 0, y: -1 };
-    } else {
-        if (direction.y === 0) direction = { x: 0, y: 1 };
+        // Vertical swipe
+        if (diffY > 0 && direction.y === 0) {
+            direction = { x: 0, y: 1 }; // Swipe down
+        } else if (diffY < 0 && direction.y === 0) {
+            direction = { x: 0, y: -1 }; // Swipe up
+        }
     }
 }
 
 // Add event listeners
 document.addEventListener("keydown", changeDirection);
 document.getElementById('startButton').addEventListener("click", startGame);
-canvas.addEventListener("touchstart", handleTouch);
-
+canvas.addEventListener("touchstart", handleTouchStart);
+canvas.addEventListener("touchend", handleTouchEnd);
 // Initial resize to match screen size
 resizeCanvas();
 window.addEventListener("resize", resizeCanvas);
