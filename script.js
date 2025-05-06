@@ -204,12 +204,14 @@ function changeDirection(e) {
 }
 
 function handleTouchStart(e) {
+    e.preventDefault(); // Prevent scrolling
     const touch = e.touches[0];
     touchStartX = touch.clientX;
     touchStartY = touch.clientY;
 }
 
 function handleTouchEnd(e) {
+    e.preventDefault(); // Prevent scrolling
     const touch = e.changedTouches[0];
     const touchEndX = touch.clientX;
     const touchEndY = touch.clientY;
