@@ -149,7 +149,7 @@ function gameLoop() {
     // Draw the game elements
     draw();
 
-    setTimeout(() => requestAnimationFrame(gameLoop), 50);
+    setTimeout(() => requestAnimationFrame(gameLoop), 100);
 }
 
 // Draw background, snake, and food
